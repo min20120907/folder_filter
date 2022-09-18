@@ -1,8 +1,10 @@
 import os, fnmatch, re, sys
-from ij import IJ, plugin
+from ij import IJ, plugin, gc
 
 tgt_path = "Images/"
 folders = []
+
+gc.enable()
 
 autoSort = False
 # autosort
@@ -54,8 +56,14 @@ def find_max(folderName):
 
         if(int(filename[10:11])>int(fr)):
             fr = filename[10:11]
-
-for filename in folders
-    plugin.FolderOpener()
-    IJ.run()
+# run the macro folder by folder
+for filename in folders:
+    # open the target folder
+    imp = plugin.FolderOpener(tgt_path+filename,"")
+    # The macro from CCLin
+    IJ.run(imp, "Stack to Hyperstack...", "order=xyctz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
+    IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
+    IJ.run(imp, "Make Composite", "")
+    # Garbage Collection
+    IJ.run(imp, "Collect Garbage", "")
 
