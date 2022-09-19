@@ -16,17 +16,17 @@ folders = []
 
 # gc.enable()
 
-autoSort = False
+autoSort = True
 # autosort
 if autoSort:
     for filename in os.listdir(tgt_path):
         if os.path.splitext(filename)[1] == ".tiff":
             if filename[0:6].upper() not in folders:
                 try:
-                    os.mkdir(filename[0:6].upper())
+                    os.mkdir(os.path.join(tgt_path,filename[0:6].upper()))
                 except:
                     pass
-            os.rename(filename, filename[0:6].upper()+"/"+filename)
+            os.rename(os.path.join(tgt_path, filename), os.path.join(tgt_path, filename[0:6].upper(), filename))
             folders.append(filename[0:6].upper())
 else:
     for (dirpath, dirnames, filenames) in os.walk(tgt_path):
@@ -40,8 +40,8 @@ fr = 0
 def find_max(folderName):
     # Warning: before using the script, please make sure the filenames are in the correct format!!!
 
-    fileOfDirectory = os.listdir(tgt_path+folderName)
-    print("The path", tgt_path+folderName)
+    fileOfDirectory = os.listdir(os.path.join(tgt_path, folderName))
+    print("The path", os.path.join(tgt_path, folderName))
     patternPrefix = folderName.lower()+"*"
 
     folder = []
@@ -81,19 +81,19 @@ for filename in folders:
     
     # open the target folder
     try:
-        imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
+        imp = plugin.FolderOpener.open(os.path.join(tgt_path,filename), "")
     except:
         pass
     try:
         # Execute the macro of Z projection, and changing to hyperstack
         IJ.run(imp, "Stack to Hyperstack...", "order=xytcz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
-        if os.path.exists(save_path+"/hyperstack"):
-            os.mkdir(save_path+"/hyperstack")
-        IJ.saveAs(imp, "Tiff", save_path+"/hyperstack/"+filename+"_hyperstack.tiff")
+        if os.path.exists(os.path.join(save_path, "hyperstack")):
+            os.mkdir(os.path.join(save_path, "hyperstack"))
+        IJ.saveAs(imp, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
         # Z Projection
-        if os.path.exists(save_path+"/Z-Proj"):
-            os.mkdir(save_path+"/Z-Proj")
-        IJ.saveAs(imp, "Tiff", save_path+"/Z-Proj/"+filename+"_MAX.tiff")
+        if os.path.exists(os.path.join(save_path,"Z-Proj")):
+            os.mkdir(os.path.join(save_path, "Z-Proj"))
+        IJ.saveAs(imp, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
         IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
         IJ.run(imp, "Make Composite", "")
         # Close everything
