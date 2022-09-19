@@ -1,10 +1,20 @@
 import os, fnmatch, re, sys
-from ij import IJ, plugin, gc
+from ij import IJ, plugin
+# import gc
 
-tgt_path = "Images/"
+
+# @File(label='Destination directory', style="directory") save_path
+# @File(label='Source directory', style="directory") tgt_path
+tgt_path = IJ.getDirectory("Source directory")
+save_path = IJ.getDirectory("Destination directory")
+
+# debug the paths
+print(tgt_path)
+print(save_path)
+
 folders = []
 
-gc.enable()
+# gc.enable()
 
 autoSort = False
 # autosort
@@ -21,8 +31,9 @@ if autoSort:
             folders.append(filename[0:6].upper())
 else:
     for (dirpath, dirnames, filenames) in os.walk(tgt_path):
-        folders.extend(filenames)
+        folders.extend(dirnames)
         break
+print(folders)
 # find the maximums of channel, slice, frame
 ch = 0
 sl = 0
@@ -59,11 +70,19 @@ def find_max(folderName):
 # run the macro folder by folder
 for filename in folders:
     # open the target folder
-    imp = plugin.FolderOpener(tgt_path+filename,"")
-    # The macro from CCLin
+    imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
+    # Execute the macro of Z projection, and changing to hyperstack
     IJ.run(imp, "Stack to Hyperstack...", "order=xyctz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
+    if os.path.exists(save_path+"/hyperstack"):
+        os.mkdir(save_path+"/hyperstack")
+    IJ.saveAs(imp, "Tiff", save_path+"/hyperstack/"+filename+"_hyperstack.tiff")
+    # Z Projection
+    if os.path.exists(save_path+"/Z-Proj"):
+        os.mkdir(save_path+"/Z-Proj")
+    IJ.saveAs(imp, "Tiff", save_path+"/Z-Proj/"+filename+"_MAX.tiff")
     IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
     IJ.run(imp, "Make Composite", "")
+    # Close everything
+    IJ.run("Close All", "")
     # Garbage Collection
     IJ.run(imp, "Collect Garbage", "")
-
