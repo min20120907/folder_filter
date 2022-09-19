@@ -59,14 +59,14 @@ def find_max(folderName):
         if(int(filename[15:16])>int(ch)):
             ch = filename[15:16]
         if(filename[18:20].isnumeric()):
-            if(int(filename[18:20])>int(sl)):
-                sl = filename[18:20]
+            if(int(filename[18:20])>int(fr)):
+                fr = filename[18:20]
         else:
-            if(int(filename[18:19])>int(sl)):
-                sl = filename[18:19]
+            if(int(filename[18])>int(fr)):
+                fr = filename[18]
+        if(int(filename[10:12])>int(sl)):
+            sl = filename[10:12]
 
-        if(int(filename[10:11])>int(fr)):
-            fr = filename[10:11]
     return (ch, sl, fr)
 
 # run the macro folder by folder
