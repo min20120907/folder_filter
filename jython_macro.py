@@ -67,14 +67,18 @@ def find_max(folderName):
 
         if(int(filename[10:11])>int(fr)):
             fr = filename[10:11]
-    print("channel: ", ch)
-    print("slice: ", sl)
-    print("frame: ", fr)
+    return (ch, sl, fr)
+
 # run the macro folder by folder
 for filename in folders:
     
     # Find the maximums
-    find_max(filename)
+    ch, sl, fr = find_max(filename)
+    
+    print("channel: "+str(ch))
+    print("slice: "+str(sl))
+    print("frame: "+str(fr))
+    
     # open the target folder
     try:
         imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
@@ -82,7 +86,7 @@ for filename in folders:
         pass
     try:
         # Execute the macro of Z projection, and changing to hyperstack
-        IJ.run(imp, "Stack to Hyperstack...", "order=xyctz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
+        IJ.run(imp, "Stack to Hyperstack...", "order=xytcz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
         if os.path.exists(save_path+"/hyperstack"):
             os.mkdir(save_path+"/hyperstack")
         IJ.saveAs(imp, "Tiff", save_path+"/hyperstack/"+filename+"_hyperstack.tiff")
