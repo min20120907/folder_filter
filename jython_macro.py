@@ -69,6 +69,8 @@ def find_max(folderName):
             fr = filename[10:11]
 # run the macro folder by folder
 for filename in folders:
+	# Find the maximums
+	find_max(filename)
     # open the target folder
     imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
     # Execute the macro of Z projection, and changing to hyperstack
