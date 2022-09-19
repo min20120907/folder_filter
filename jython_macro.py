@@ -16,7 +16,7 @@ folders = []
 
 # gc.enable()
 
-autoSort = True
+autoSort = False
 # autosort
 if autoSort:
     for filename in os.listdir(tgt_path):
@@ -85,17 +85,18 @@ for filename in folders:
     except:
         pass
     try:
+        args_hyperstack = "order=xytcz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color"
         # Execute the macro of Z projection, and changing to hyperstack
-        IJ.run(imp, "Stack to Hyperstack...", "order=xytcz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
-        if os.path.exists(os.path.join(save_path, "hyperstack")):
+        IJ.run(imp, "Stack to Hyperstack...",args_hyperstack)
+        if not os.path.exists(os.path.join(save_path, "hyperstack")):
             os.mkdir(os.path.join(save_path, "hyperstack"))
         IJ.saveAs(imp, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
         # Z Projection
-        if os.path.exists(os.path.join(save_path,"Z-Proj")):
+        if not os.path.exists(os.path.join(save_path,"Z-Proj")):
             os.mkdir(os.path.join(save_path, "Z-Proj"))
         IJ.saveAs(imp, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
         IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
-        IJ.run(imp, "Make Composite", "")
+        IJ.run(imp, "Make Composite", "Composite")
         # Close everything
         IJ.run("Close All", "")
         # Garbage Collection
