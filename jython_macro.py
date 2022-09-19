@@ -40,14 +40,17 @@ fr = 0
 def find_max(folderName):
     # Warning: before using the script, please make sure the filenames are in the correct format!!!
 
-    fileOfDirectory = os.listdir(folderName)
-    print(folderName)
+    fileOfDirectory = os.listdir(tgt_path+folderName)
+    print("The path", tgt_path+folderName)
+    patternPrefix = folderName.lower()+"*"
+
     folder = []
 
     # append everything into the list
     for filename in fileOfDirectory:
-        folder.append(filename)
-
+        if fnmatch.fnmatch(filename, patternPrefix):
+            folder.append(filename)
+    print("files: ", folder)
     global ch
     global sl
     global fr
@@ -64,24 +67,34 @@ def find_max(folderName):
 
         if(int(filename[10:11])>int(fr)):
             fr = filename[10:11]
+    print("channel: ", ch)
+    print("slice: ", sl)
+    print("frame: ", fr)
 # run the macro folder by folder
 for filename in folders:
+    
     # Find the maximums
-    find_max(tgt_path+"/"+filename)
+    find_max(filename)
     # open the target folder
-    imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
-    # Execute the macro of Z projection, and changing to hyperstack
-    IJ.run(imp, "Stack to Hyperstack...", "order=xyctz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
-    if os.path.exists(save_path+"/hyperstack"):
-        os.mkdir(save_path+"/hyperstack")
-    IJ.saveAs(imp, "Tiff", save_path+"/hyperstack/"+filename+"_hyperstack.tiff")
-    # Z Projection
-    if os.path.exists(save_path+"/Z-Proj"):
-        os.mkdir(save_path+"/Z-Proj")
-    IJ.saveAs(imp, "Tiff", save_path+"/Z-Proj/"+filename+"_MAX.tiff")
-    IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
-    IJ.run(imp, "Make Composite", "")
-    # Close everything
-    IJ.run("Close All", "")
-    # Garbage Collection
-    IJ.run(imp, "Collect Garbage", "")
+    try:
+        imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
+    except:
+        pass
+    try:
+        # Execute the macro of Z projection, and changing to hyperstack
+        IJ.run(imp, "Stack to Hyperstack...", "order=xyctz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color")
+        if os.path.exists(save_path+"/hyperstack"):
+            os.mkdir(save_path+"/hyperstack")
+        IJ.saveAs(imp, "Tiff", save_path+"/hyperstack/"+filename+"_hyperstack.tiff")
+        # Z Projection
+        if os.path.exists(save_path+"/Z-Proj"):
+            os.mkdir(save_path+"/Z-Proj")
+        IJ.saveAs(imp, "Tiff", save_path+"/Z-Proj/"+filename+"_MAX.tiff")
+        IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
+        IJ.run(imp, "Make Composite", "")
+        # Close everything
+        IJ.run("Close All", "")
+        # Garbage Collection
+        IJ.run(imp, "Collect Garbage", "")
+    except:
+        pass
