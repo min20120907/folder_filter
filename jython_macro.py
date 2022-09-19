@@ -27,7 +27,6 @@ if autoSort:
                 except:
                     pass
             os.rename(filename, filename[0:6].upper()+"/"+filename)
-    
             folders.append(filename[0:6].upper())
 else:
     for (dirpath, dirnames, filenames) in os.walk(tgt_path):
@@ -41,15 +40,13 @@ fr = 0
 def find_max(folderName):
     # Warning: before using the script, please make sure the filenames are in the correct format!!!
 
-    fileOfDirectory = folderName
-    # first pattern to filter all the tiffs with the prefix
-    patternPrefix = sys.argv[-1].lower()+"*"
+    fileOfDirectory = os.listdir(folderName)
+    print(folderName)
     folder = []
 
     # append everything into the list
     for filename in fileOfDirectory:
-        if fnmatch.fnmatch(filename, patternPrefix):
-                folder.append(filename)
+        folder.append(filename)
 
     global ch
     global sl
@@ -69,8 +66,8 @@ def find_max(folderName):
             fr = filename[10:11]
 # run the macro folder by folder
 for filename in folders:
-	# Find the maximums
-	find_max(filename)
+    # Find the maximums
+    find_max(tgt_path+"/"+filename)
     # open the target folder
     imp = plugin.FolderOpener.open(tgt_path+"/"+filename, "")
     # Execute the macro of Z projection, and changing to hyperstack
