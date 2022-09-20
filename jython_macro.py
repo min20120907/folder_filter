@@ -81,7 +81,8 @@ for filename in folders:
     
     # open the target folder
     try:
-        imp = plugin.FolderOpener.open(os.path.join(tgt_path,filename), "")
+    	if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")) or not os.path.exists(os.path.join(save_path, "hyperstack", filename+"_hyperstack.tiff")):
+    	    imp = plugin.FolderOpener.open(os.path.join(tgt_path,filename), "")
     except:
         pass
     try:
@@ -90,11 +91,13 @@ for filename in folders:
         IJ.run(imp, "Stack to Hyperstack...",args_hyperstack)
         if not os.path.exists(os.path.join(save_path, "hyperstack")):
             os.mkdir(os.path.join(save_path, "hyperstack"))
-        IJ.saveAs(imp, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
+        if not os.path.exists(os.path.join(save_path, "hyperstack", filename+"_hyperstack.tiff")):
+            IJ.saveAs(imp, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
         # Z Projection
         if not os.path.exists(os.path.join(save_path,"Z-Proj")):
             os.mkdir(os.path.join(save_path, "Z-Proj"))
-        IJ.saveAs(imp, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
+        if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")):
+            IJ.saveAs(imp, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
         IJ.run(imp, "Z Project...", "projection=[Max Intensity] all")
         IJ.run(imp, "Make Composite", "Composite")
         # Close everything
