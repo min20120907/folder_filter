@@ -88,23 +88,24 @@ for filename in folders:
     try:
         args_hyperstack = "order=xytcz channels="+str(ch)+" slices="+str(sl)+" frames="+str(fr)+" display=Color"
         # Execute the macro of Z projection, and changing to hyperstack
-        IJ.run(imp, "Stack to Hyperstack...",args_hyperstack)
+        imp3 = IJ.run(imp, "Stack to Hyperstack...",args_hyperstack)
         if not os.path.exists(os.path.join(save_path, "hyperstack")):
             os.mkdir(os.path.join(save_path, "hyperstack"))
         if not os.path.exists(os.path.join(save_path, "hyperstack", filename+"_hyperstack.tiff")):
-            IJ.saveAs(imp, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
-
+            IJ.saveAs(imp3, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
+        
         # Z Projection
         if not os.path.exists(os.path.join(save_path,"Z-Proj")):
             os.mkdir(os.path.join(save_path, "Z-Proj"))
-        
-        IJ.run(imp, "Maximum-Z-Projection frame by frame on multiple GPUs (experimental)", "")
-        IJ.selectWindow("MaximumZProjectionFrameProcessor_"+filename)
+        print("GPU doing z projection")
+        imp2 = IJ.run(imp, "Maximum-Z-Projection frame by frame on multiple GPUs (experimental)", "")
+        print("GPU saving")
+        # IJ.selectWindow("MaximumZProjectionFrameProcessor_"+filename)
         if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")):
-            IJ.saveAs(imp, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
+            IJ.saveAs(imp2, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
         # Close everything
         IJ.run("Close All", "")
         # Garbage Collection
-        IJ.run(imp, "Collect Garbage", "")
+        IJ.run("Collect Garbage", "")
     except:
         pass
