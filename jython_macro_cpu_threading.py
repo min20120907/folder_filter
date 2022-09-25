@@ -106,13 +106,13 @@ class MacroThread(Thread):
             # Z Projection
             if not os.path.exists(os.path.join(save_path,"Z-Proj")):
                 os.mkdir(os.path.join(save_path, "Z-Proj"))
-            print("GPU doing z projection")
+            print("CPU doing z projection")
             imp2 =IJ.run(imp3, "Z Project...", "projection=[Max Intensity] all")
-            IJ.run(imp2, "Make Composite", "Composite")
-            print("GPU saving")
+            imp4 = IJ.run(imp2, "Make Composite", "Composite")
+            print("CPU saving")
             # IJ.selectWindow("MaximumZProjectionFrameProcessor_"+filename)
             if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")):
-                IJ.saveAs(imp2, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
+                IJ.saveAs(imp4, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
             # Close everything
             IJ.run("Close All", "")
             # Garbage Collection
