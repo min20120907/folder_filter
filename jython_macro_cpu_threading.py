@@ -82,7 +82,7 @@ class MacroThread(Thread):
     # The execution
     def run(self):
         # Find the maximums
-        ch, sl, fr = find_max(filename)
+        ch, sl, fr = find_max(self.filename)
         
         print("channel: "+str(ch))
         print("slice: "+str(sl))
@@ -90,8 +90,8 @@ class MacroThread(Thread):
         
         # open the target folder
         try:
-            if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")) or not os.path.exists(os.path.join(save_path, "hyperstack", filename+"_hyperstack.tiff")):
-                imp = plugin.FolderOpener.open(os.path.join(tgt_path,filename), "virtual")
+            if not os.path.exists(os.path.join(save_path, "Z-Proj", self.filename+"_MAX.tiff")) or not os.path.exists(os.path.join(save_path, "hyperstack", self.filename+"_hyperstack.tiff")):
+                imp = plugin.FolderOpener.open(os.path.join(tgt_path,self.filename), "virtual")
         except:
             pass
         try:
@@ -100,8 +100,8 @@ class MacroThread(Thread):
             imp3 = IJ.run(imp, "Stack to Hyperstack...",args_hyperstack)
             if not os.path.exists(os.path.join(save_path, "hyperstack")):
                 os.mkdir(os.path.join(save_path, "hyperstack"))
-            if not os.path.exists(os.path.join(save_path, "hyperstack", filename+"_hyperstack.tiff")):
-                IJ.saveAs(imp3, "Tiff", os.path.join(save_path,"hyperstack", filename+"_hyperstack.tiff"))
+            if not os.path.exists(os.path.join(save_path, "hyperstack", self.filename+"_hyperstack.tiff")):
+                IJ.saveAs(imp3, "Tiff", os.path.join(save_path,"hyperstack", self.filename+"_hyperstack.tiff"))
             
             # Z Projection
             if not os.path.exists(os.path.join(save_path,"Z-Proj")):
@@ -111,8 +111,8 @@ class MacroThread(Thread):
             imp4 = IJ.run(imp2, "Make Composite", "Composite")
             print("CPU saving")
             # IJ.selectWindow("MaximumZProjectionFrameProcessor_"+filename)
-            if not os.path.exists(os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff")):
-                IJ.saveAs(imp4, "Tiff", os.path.join(save_path, "Z-Proj", filename+"_MAX.tiff"))
+            if not os.path.exists(os.path.join(save_path, "Z-Proj", self.filename+"_MAX.tiff")):
+                IJ.saveAs(imp4, "Tiff", os.path.join(save_path, "Z-Proj", self.filename+"_MAX.tiff"))
             # Close everything
             IJ.run("Close All", "")
             # Garbage Collection
