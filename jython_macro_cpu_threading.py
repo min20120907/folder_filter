@@ -124,9 +124,14 @@ class MacroThread(Thread):
 
 if __name__ == '__main__':
     print("start time:",datetime.now())
-
+    threads = []
     # run the macro folder by folder
     for filename in folders:
-        MacroThread(filename).start()
+        threads.append(MacroThread(filename))
+    
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
     print("end time:",datetime.now())
